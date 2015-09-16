@@ -1,11 +1,10 @@
-package edu.jsykora.testing;
+package com.jsykora.testing;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.pagefactory.Annotations;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -15,49 +14,43 @@ import java.util.List;
  */
 public class CustomElementLocator implements ElementLocator {
     private WebDriver driver;
-    private FindBy annotation;
+    private Annotations annotations;
+    private By by;
+    private WebElement cachedElement;
+    private List<WebElement> cachedElementList;
+    private final boolean shouldCache;
 
     public CustomElementLocator(Field upperElement, WebDriver driver) {
         this.driver = driver;
-        this.annotation = upperElement.getDeclaredAnnotation(FindBy.class);
+        this.annotations = new Annotations(upperElement);
+        this.shouldCache = this.annotations.isLookupCached();
+        this.by = this.annotations.buildBy();
     }
 
     @Override
     public WebElement findElement() {
-        return driver.findElement(resolveHow());
+        if (cachedElement != null && shouldCache) {
+            return cachedElement;
+        }
+        WebElement element = driver.findElement(by);
+        if (shouldCache) {
+            cachedElement = element;
+        }
+        return element;
     }
+
 
     @Override
     public List<WebElement> findElements() {
-        return driver.findElements(resolveHow());
+        if (cachedElementList != null && shouldCache) {
+            return cachedElementList;
+        }
+        List<WebElement> elements = driver.findElements(by);
+        if (shouldCache) {
+            cachedElementList = elements;
+        }
+        return elements;
     }
 
-    private By resolveHow() {
-        if (annotation.how() != null) {
-            switch (annotation.how()) {
-                case CLASS_NAME:
-                    return By.className(annotation.className());
-                case CSS:
-                    return By.cssSelector(annotation.css());
-                case ID:
-                    return By.id(annotation.id());
-                case ID_OR_NAME:
-                /*this design would need some rework or find a work around*/
-                    throw new NotImplementedException();
-                case LINK_TEXT:
-                    return By.linkText(annotation.linkText());
-                case NAME:
-                    return By.name(annotation.name());
-                case PARTIAL_LINK_TEXT:
-                    throw new NotImplementedException();
-                case TAG_NAME:
-                    return By.tagName(annotation.tagName());
-                case XPATH:
-                    return By.xpath(annotation.xpath());
-                case UNSET:
-                    throw new NotImplementedException();
-            }
-        }
-        throw new NotImplementedException();
-    }
+
 }
