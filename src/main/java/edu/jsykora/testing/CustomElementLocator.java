@@ -1,4 +1,4 @@
-package com.jsykora.testing;
+package edu.jsykora.testing;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
