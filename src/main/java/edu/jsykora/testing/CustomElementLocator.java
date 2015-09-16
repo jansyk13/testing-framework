@@ -13,18 +13,17 @@ import java.util.List;
  * Created by jsykora on 11. 9. 2015.
  */
 public class CustomElementLocator implements ElementLocator {
-    private WebDriver driver;
-    private Annotations annotations;
-    private By by;
+    private final WebDriver driver;
+    private final By by;
     private WebElement cachedElement;
     private List<WebElement> cachedElementList;
     private final boolean shouldCache;
 
     public CustomElementLocator(Field upperElement, WebDriver driver) {
         this.driver = driver;
-        this.annotations = new Annotations(upperElement);
-        this.shouldCache = this.annotations.isLookupCached();
-        this.by = this.annotations.buildBy();
+        Annotations annotations = new Annotations(upperElement);
+        this.shouldCache = annotations.isLookupCached();
+        this.by = annotations.buildBy();
     }
 
     @Override

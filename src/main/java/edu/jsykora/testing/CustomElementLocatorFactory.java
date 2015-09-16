@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
  * Created by jsykora on 11. 9. 2015.
  */
 public class CustomElementLocatorFactory implements ElementLocatorFactory {
-    private WebDriver driver;
+    private final WebDriver driver;
 
     public CustomElementLocatorFactory(WebDriver driver) {
         this.driver = driver;

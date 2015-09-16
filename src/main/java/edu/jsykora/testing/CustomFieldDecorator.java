@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class CustomFieldDecorator extends DefaultFieldDecorator implements FieldDecorator {
-    private WebDriver driver;
+    private final WebDriver driver;
 
     public CustomFieldDecorator(ElementLocatorFactory factory, WebDriver driver) {
         super(factory);
@@ -22,8 +22,8 @@ public class CustomFieldDecorator extends DefaultFieldDecorator implements Field
     @Override
     public Object decorate(ClassLoader loader, Field field) {
         if (field.isAnnotationPresent(WebElementFinder.class) && field.isAnnotationPresent(FindBy.class)) {
-            Class<?> clazz = null;
-            Constructor<?> cons = null;
+            Class<?> clazz;
+            Constructor<?> cons;
             WebElementFinder finder = field.getDeclaredAnnotation(WebElementFinder.class);
             field.setAccessible(true);
 
